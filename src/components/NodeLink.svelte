@@ -1,6 +1,6 @@
 <script>
     import { onMount } from "svelte";
-    import * as force from "d3-force";
+    import * as d3 from "d3-force";
     import import_data from "./data";
 
     const TEXT_COLOUR = "#53D8FB";
@@ -29,32 +29,70 @@
 
     let svg, width, height, graph;
     let data = import_data;
+    let lastUpdateTime;
 
     onMount(async () => {
         let rect = svg.getBoundingClientRect();
         width = rect.width;
         height = rect.height;
 
-        graph = force
+        graph = d3
             .forceSimulation(data.nodes)
             .force(
                 "link",
-                force.forceLink(data.links).id(function (d) {
+                d3.forceLink(data.links).id(function (d) {
                     return d.id;
                 })
             )
-            .force("charge", force.forceManyBody().strength(-300))
-            // .force("center-x", d3.forceCenter(width / 2, height / 2))
-            .force("center-x", force.forceX().x(width / 2))
-            .force("center-y", force.forceY().y(height / 2))
+            .force("charge", d3.forceManyBody().strength(-300))
+            .force("center-x", d3.forceX().x(width / 2))
+            .force("center-y", d3.forceY().y(height / 2))
             .force(
                 "idk",
-                force.forceCollide().radius(function (d) {
+                d3.forceCollide().radius(function (d) {
                     return getRadius(d) + 2;
                 })
             )
-            .on('tick', () => {data=data});
+            .on("tick", () => {
+                data = data;
+            });
     });
+
+    function dragstart(d) {
+        if(graph) graph.alphaTarget(0.2).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+
+        lastUpdateTime = null;
+
+        function mousemove(e) {
+            drag(e, d);
+        }
+
+        addEventListener('mousemove', mousemove)
+        addEventListener('mouseup', function mouseup(){dragend(d, mousemove)}, {once: true})
+    }
+
+    function drag(e, d) {
+        d.fx = e.clientX;
+        d.fy = e.clientY;
+    }
+
+    function dragend(d, func) {
+        console.log(d);
+        if (graph) {
+            graph.alphaTarget(0.01)
+        };
+        d.fx = null;
+        d.fy = null;
+
+        lastUpdateTime = performance.now();
+
+        removeEventListener('mousemove', func)
+    }
+
+    $: data && lastUpdateTime && ((performance.now() - lastUpdateTime) > 5000) && graph.stop();
+
 
 </script>
 
@@ -78,6 +116,15 @@
                 cy={node.y}
                 stroke-width="5"
                 stroke={get_colour(node)}
+                
+                on:mousedown={() => {dragstart(node)}}
+
+                on:mouseenter={() => {
+                    // console.log(`node ${node.id} hovered over`);
+                }}
+                on:mouseleave={() => {
+                    // console.log(`node ${node.id} exited`);
+                }}
             />
         {/each}
     </g>
@@ -92,8 +139,13 @@
         fill: #394648;
     }
 
+    circle {
+        cursor: grab;
+    }
+
     svg {
         width: 100%;
         height: 100%;
+        background: rgb(24, 28, 29);
     }
 </style>
