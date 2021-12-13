@@ -18,6 +18,11 @@
         return COLOURS[node.size - 1];
     }
 
+    function get_stroke_width(node) {
+        // return 7 - node.size;
+        return 5;
+    }
+
     function getRadius(d) {
         return 30 - 4 * d.size;
     }
@@ -49,7 +54,7 @@
             .force(
                 "force-collide",
                 d3.forceCollide().radius(function (d) {
-                    return getRadius(d) + 2;
+                    return getRadius(d) + get_stroke_width(d);
                 })
             )
             .on("tick", () => {
@@ -139,7 +144,7 @@
                 r={getRadius(node)}
                 cx={node.x}
                 cy={node.y}
-                stroke-width="5"
+                stroke-width={get_stroke_width(node)}
                 stroke={get_colour(node)}
                 on:mousedown={() => {
                     dragstart(node);
