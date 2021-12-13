@@ -71,6 +71,7 @@
             graph.force("center-x").x(width / 2);
             graph.force("center-y").y(height / 2);
 
+            graph.restart();
             graph.alphaTarget(0.2);
             lastUpdateTime = performance.now();
         });
