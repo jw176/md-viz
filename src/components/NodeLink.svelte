@@ -2,6 +2,9 @@
     import { onMount } from "svelte";
     import * as d3 from "d3-force";
     import import_data from "./data";
+    import NodeTooltip from "./NodeTooltip.svelte";
+
+    let hover_node_index = null;
 
     export const COLOURS = [
         "#4cc9f0",
@@ -34,6 +37,7 @@
     let svg, width, height, graph;
     let data = import_data;
     let lastUpdateTime;
+    let elementIsBeingDragged = false;
 
     onMount(async () => {
         let rect = svg.getBoundingClientRect();
@@ -87,6 +91,8 @@
         d.fx = d.x;
         d.fy = d.y;
 
+        elementIsBeingDragged = true;
+
         lastUpdateTime = null;
 
         function mousemove(e) {
@@ -116,6 +122,8 @@
         d.fy = null;
 
         lastUpdateTime = performance.now();
+        elementIsBeingDragged = false;
+        hover_node_index = null;
 
         removeEventListener("mousemove", func);
     }
@@ -139,7 +147,7 @@
         {/each}
     </g>
     <g class="nodes">
-        {#each data.nodes as node}
+        {#each data.nodes as node, i}
             <circle
                 r={getRadius(node)}
                 cx={node.x}
@@ -150,15 +158,21 @@
                     dragstart(node);
                 }}
                 on:mouseenter={() => {
-                    // console.log(`node ${node.id} hovered over`);
+                    if (elementIsBeingDragged) return;
+                    hover_node_index = i;
                 }}
                 on:mouseleave={() => {
-                    // console.log(`node ${node.id} exited`);
+                    if (elementIsBeingDragged) return;
+                    hover_node_index = null;
                 }}
             />
         {/each}
     </g>
 </svg>
+
+{#if hover_node_index !== null}
+    <NodeTooltip node={data.nodes[hover_node_index]} container_height={height} container_width={width} colour={get_colour(data.nodes[hover_node_index])}></NodeTooltip>
+{/if}
 
 <style>
     .links {
@@ -177,5 +191,6 @@
         width: 100%;
         height: 100%;
         background: rgb(24, 28, 29);
+        position: relative;
     }
 </style>
