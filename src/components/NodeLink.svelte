@@ -110,8 +110,9 @@
     }
 
     function drag(e, d) {
-        d.fx = e.clientX;
-        d.fy = e.clientY;
+        const rect = svg.getBoundingClientRect();
+        d.fx = e.clientX - rect.left;
+        d.fy = e.clientY - rect.top;
     }
 
     function dragend(d, func) {
@@ -171,7 +172,7 @@
 </svg>
 
 {#if hover_node_index !== null}
-    <NodeTooltip node={data.nodes[hover_node_index]} container_height={height} container_width={width} colour={get_colour(data.nodes[hover_node_index])}></NodeTooltip>
+    <NodeTooltip node={data.nodes[hover_node_index]} container_rect={svg.getBoundingClientRect()} colour={get_colour(data.nodes[hover_node_index])}></NodeTooltip>
 {/if}
 
 <style>
@@ -191,6 +192,5 @@
         width: 100%;
         height: 100%;
         background: rgb(24, 28, 29);
-        position: relative;
     }
 </style>

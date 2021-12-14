@@ -1,7 +1,6 @@
 <script>
     export let node;
-    export let container_width;
-    export let container_height;
+    export let container_rect;
     export let colour;
 
     let x, y;
@@ -10,8 +9,8 @@
         return Math.max(min, Math.min(max, val));
     }
 
-    $: x = clamp(0, node.x - 100, container_width - 200);
-    $: y = clamp(0, node.y + 25, container_height - 120);
+    $: x = clamp(0, node.x - 100, container_rect.width - 200) + container_rect.left;
+    $: y = clamp(0, node.y + 25, container_rect.height - 120) + container_rect.top;
 
 </script>
 
