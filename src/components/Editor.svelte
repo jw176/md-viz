@@ -6,11 +6,71 @@
     import { addListNodes } from "prosemirror-schema-list";
     import { exampleSetup } from "prosemirror-example-setup";
     import { onMount } from "svelte";
+    import { nodes_store, links_store } from "../stores";
 
     let editor, content;
 
     // Mix the nodes from prosemirror-schema-list into the basic schema to
     // create a schema with list support.
+
+    function parser(doc) {
+        const content = doc.content.content; // an array of objects where each object represents a node eg, heading, paragraph
+
+        // const headings = ["H1", "H2", "H3", "H4", "H5", "H6"];
+        let last_ids = [0, 0, 0, 0, 0, 0];
+
+        let nodes = [];
+        let links = [];
+
+        let id = 1;
+
+        for (let i = 0; i < content.length; i++) {
+            let type = content[i].type.name;
+
+            if (type === "heading") {
+                let level = content[i].attrs.level;
+                let name = "";
+                if (content[i].content.content[0]) {
+                    name = content[i].content.content[0].text;
+                }
+
+                nodes.push({
+                    id: id,
+                    name: name,
+                    size: level,
+                    content: [],
+                });
+
+                last_ids[level - 1] = id;
+
+                if (level > 1) {
+                    links.push({
+                        source: last_ids[level - 2],
+                        target: id,
+                    });
+                }
+
+                id++;
+            } else {
+                // ignore for now?
+            }
+        }
+
+        return {
+            nodes: nodes,
+            links: links,
+        };
+    }
+
+    async function update_node_tree(transaction) {
+        if (transaction.steps.length === 0) return;
+
+        let tree_data = parser(transaction.doc);
+        console.log(tree_data);
+        // content_tree.set(tree_data);
+        nodes_store.set(tree_data.nodes);
+        links_store.set(tree_data.links);
+    }
 
     onMount(async () => {
         const mySchema = new Schema({
@@ -20,18 +80,23 @@
 
         window.view = new EditorView(editor, {
             state: EditorState.create({
-                doc: DOMParser.fromSchema(mySchema).parse(
-                    content
-                ),
+                doc: DOMParser.fromSchema(mySchema).parse(content),
                 plugins: exampleSetup({ schema: mySchema }),
             }),
+            dispatchTransaction(transaction) {
+                console.log(transaction);
+
+                update_node_tree(transaction);
+
+                let newState = view.state.apply(transaction);
+                view.updateState(newState);
+            },
         });
     });
 </script>
 
 <div class="editor" bind:this={editor} />
-<div class="content" bind:this={content}></div>
+<div class="content" bind:this={content} />
 
 <style>
-    
 </style>

@@ -3,6 +3,7 @@
     import * as d3 from "d3-force";
     import import_data from "./data";
     import NodeTooltip from "./NodeTooltip.svelte";
+    import { nodes_store, links_store } from '../stores';
 
     let hover_node_index = null;
 
@@ -35,15 +36,12 @@
     }
 
     let svg, width, height, graph;
-    let data = import_data;
+    // let data = import_data;
     let lastUpdateTime;
     let elementIsBeingDragged = false;
+    let data = {nodes:[], links:[]};
 
-    onMount(async () => {
-        let rect = svg.getBoundingClientRect();
-        width = rect.width;
-        height = rect.height;
-
+    function generate_graph(){
         graph = d3
             .forceSimulation(data.nodes)
             .force(
@@ -70,9 +68,25 @@
                     d.y = clamp(r, d.y, height - r);
                 })
             });
+    }
+    
+    nodes_store.subscribe((val) => {
+        data.nodes = val;
+        generate_graph();
+    })
+    links_store.subscribe((val) => {
+        data.links = val;
+        generate_graph();
+    })
+
+    onMount(async () => {
+        let rect = svg.getBoundingClientRect();
+        width = rect.width;
+        height = rect.height;
+
+        generate_graph();
 
         addEventListener("resize", () => {
-            console.log('resize')
             let rect = svg.getBoundingClientRect();
             width = rect.width;
             height = rect.height;

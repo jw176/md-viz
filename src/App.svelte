@@ -22,6 +22,7 @@
 		display: grid;
 		grid-template-columns: 1fr 1.2fr;
 		grid-template-rows: 1fr;
+		overflow: hidden;
 	}
 
 	.editor-wrapper {
