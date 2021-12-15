@@ -4,7 +4,6 @@
 </script>
 
 <main>
-	<!-- <Overview></Overview> -->
 	<div class="editor-wrapper">
 		<Editor></Editor>
 	</div>
