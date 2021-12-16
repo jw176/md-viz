@@ -54,9 +54,16 @@
                         }
                     }
                 }
-                
+
                 id++;
 
+            } else if (type === "paragraph") {
+                if (nodes.length > 0){
+                    if (content[i].content.content[0]) {
+                        const text = content[i].content.content[0].text;
+                        nodes[nodes.length - 1].content.push(text);
+                    }
+                }
             } else {
                 // ignore for now?
             }
