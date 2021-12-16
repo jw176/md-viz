@@ -72,10 +72,6 @@
     
     nodes_store.subscribe((val) => {
         data.nodes = val;
-        for (const key in data.nodes){
-            data.nodes[key].x = width / 2;
-            data.nodes[key].y = height / 2;
-        }
         generate_graph();
     })
     links_store.subscribe((val) => {
