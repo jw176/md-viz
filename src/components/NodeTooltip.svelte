@@ -2,6 +2,7 @@
     export let node;
     export let container_rect;
     export let colour;
+    import { fade } from 'svelte/transition';
 
     let x, y;
 
@@ -16,6 +17,13 @@
 
 <div class="node-tooltip" style="top:{y}px; left:{x}px; border-color:{colour}">
     <h3>{node.name}</h3>
+    <div class="sub-content" transition:fade>
+        {#each node.content as sub_content}
+            <p>
+                {sub_content}
+            </p>
+        {/each}
+    </div>
 </div>
 
 <style>
@@ -36,4 +44,14 @@
         box-shadow: 0px 0px 30px 0px rgba(255, 255, 255, 0.1);
         pointer-events: none;
     }
+
+    /* .sub-content {
+        animation: expand-tooltip 2s linear 2s 1 forwards;
+    }
+
+    @keyframes expand-tooltip {
+        0% {width: 0; height: 0; color: transparent;}
+        20% {width: auto; height: auto; color: transparent;}
+        100% {color: white;}
+    } */
 </style>
