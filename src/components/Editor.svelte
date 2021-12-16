@@ -17,7 +17,7 @@
         const content = doc.content.content; // an array of objects where each object represents a node eg, heading, paragraph
 
         // const headings = ["H1", "H2", "H3", "H4", "H5", "H6"];
-        let last_ids = [0, 0, 0, 0, 0, 0];
+        let last_ids = [-1, -1, -1, -1, -1, -1];
 
         let nodes = [];
         let links = [];
@@ -44,13 +44,19 @@
                 last_ids[level - 1] = id;
 
                 if (level > 1) {
-                    links.push({
-                        source: last_ids[level - 2],
-                        target: id,
-                    });
+                    for (let j = level - 2; j >= 0; j--) {
+                        if (last_ids[j] !== -1) {
+                            links.push({
+                                source: last_ids[j],
+                                target: id,
+                            });
+                            break;
+                        }
+                    }
                 }
-
+                
                 id++;
+
             } else {
                 // ignore for now?
             }
