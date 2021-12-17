@@ -48,9 +48,9 @@
                 "link",
                 d3.forceLink(data.links).id(function (d) {
                     return d.id;
-                })
+                }).strength(0.5)
             )
-            .force("charge", d3.forceManyBody().strength(-300))
+            .force("charge", d3.forceManyBody().strength(-1000))
             .force("center-x", d3.forceX().x(width / 2))
             .force("center-y", d3.forceY().y(height / 2))
             .force(
@@ -68,6 +68,7 @@
                     d.y = clamp(r, d.y, height - r);
                 })
             });
+        graph.tick();
     }
     
     nodes_store.subscribe((val) => {
