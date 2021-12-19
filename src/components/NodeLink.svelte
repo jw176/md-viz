@@ -70,15 +70,6 @@
             });
         graph.tick();
     }
-    
-    nodes_store.subscribe((val) => {
-        data.nodes = val;
-        generate_graph();
-    })
-    links_store.subscribe((val) => {
-        data.links = val;
-        generate_graph();
-    })
 
     onMount(async () => {
         let rect = svg.getBoundingClientRect();
@@ -98,6 +89,15 @@
             graph.restart();
             graph.alphaTarget(0.2);
             lastUpdateTime = performance.now();
+        });
+
+        nodes_store.subscribe((val) => {
+            data.nodes = val;
+            generate_graph();
+        });
+        links_store.subscribe((val) => {
+            data.links = val;
+            generate_graph();
         });
     });
 

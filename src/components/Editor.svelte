@@ -56,9 +56,8 @@
                 }
 
                 id++;
-
             } else if (type === "paragraph") {
-                if (nodes.length > 0){
+                if (nodes.length > 0) {
                     if (content[i].content.content[0]) {
                         const text = content[i].content.content[0].text;
                         nodes[nodes.length - 1].content.push(text);
@@ -75,10 +74,12 @@
         };
     }
 
-    async function update_node_tree(transaction) {
-        if (transaction.steps.length === 0) return;
-
-        let tree_data = parser(transaction.doc);
+    async function update_node_tree(obj, is_transaction) {
+        if (is_transaction) {
+            if (obj.steps.length === 0) return;
+        }
+        const doc = is_transaction ? obj.doc : obj;
+        let tree_data = parser(doc);
         console.log(tree_data);
         // content_tree.set(tree_data);
         nodes_store.set(tree_data.nodes);
@@ -91,15 +92,18 @@
             marks: schema.spec.marks,
         });
 
+        const initial_doc = DOMParser.fromSchema(mySchema).parse(content);
+        update_node_tree(initial_doc, false);
+
         window.view = new EditorView(editor, {
             state: EditorState.create({
-                doc: DOMParser.fromSchema(mySchema).parse(content),
+                doc: initial_doc,
                 plugins: exampleSetup({ schema: mySchema }),
             }),
             dispatchTransaction(transaction) {
                 console.log(transaction);
 
-                update_node_tree(transaction);
+                update_node_tree(transaction, true);
 
                 let newState = view.state.apply(transaction);
                 view.updateState(newState);
@@ -109,7 +113,26 @@
 </script>
 
 <div class="editor" bind:this={editor} />
-<div class="content" bind:this={content} />
+
+<div class="content" bind:this={content}>
+    <h1>Markdown Visualiser</h1>
+
+    <h2>Development</h2>
+    This app was created with the following technologies: Svelte D3js ProseMirror
+    <h3>Svelte</h3>
+    <h3>D3js</h3>
+    <h3>ProseMirror</h3>
+
+    <h2>Usage</h2>
+    <p>
+        Simply edit the text in this editor and the document structure will be
+        visualised on the right in the form of a node link diagram.
+    </p>
+    <p>
+        You can interact with the visualisation by dragging nodes, and hovering
+        over a node will show a tooltip with some information from that node.
+    </p>
+</div>
 
 <style>
 </style>
