@@ -41,19 +41,18 @@
                     content: [],
                 });
 
-                last_ids[level - 1] = id;
-
                 if (level > 1) {
-                    for (let j = level - 2; j >= 0; j--) {
-                        if (last_ids[j] !== -1) {
-                            links.push({
-                                source: last_ids[j],
-                                target: id,
-                            });
-                            break;
-                        }
+                    const last_id = Math.max(...last_ids.slice(0, level - 1));
+                    console.log(last_id)
+                    if (last_id !== -1) {
+                        links.push({
+                            source: last_id,
+                            target: id,
+                        });
                     }
                 }
+
+                last_ids[level - 1] = id;
 
                 id++;
             } else if (type === "paragraph") {
