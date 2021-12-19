@@ -31,6 +31,7 @@
     ];
 
     export const FORCE_BOUNDARY = true;
+    export let viz_expanded;
 
     function get_colour(node) {
         return COLOURS[node.size - 1];
@@ -49,7 +50,12 @@
         return Math.max(min, Math.min(max, val));
     }
 
-    let svg, width, height, graph, min_size = 1, max_size = 6;
+    let svg,
+        width,
+        height,
+        graph,
+        min_size = 1,
+        max_size = 6;
     // let data = import_data;
 
     let elementIsBeingDragged = false;
@@ -71,12 +77,18 @@
             .force("center-x", d3.forceX().x(width / 2))
             .force(
                 "center-y",
-                d3.forceY().y(function (d) {
-                    if (!options[0].active) return (height / 2);
-                    const val = Math.round(((d.size - min_size + 1) / (max_size - min_size + 2)) * height);
-                    console.log(val);
-                    return val;
-                }).strength(options[0].active ? 2 : 0.2)
+                d3
+                    .forceY()
+                    .y(function (d) {
+                        if (!options[0].active) return height / 2;
+                        const val = Math.round(
+                            ((d.size - min_size + 1) /
+                                (max_size - min_size + 2)) *
+                                height
+                        );
+                        return val;
+                    })
+                    .strength(options[0].active ? 2 : 0.2)
             )
             .force(
                 "force-collide",
@@ -97,19 +109,28 @@
         graph.restart();
     }
 
-    function update_max_and_min_sizes(nodes){
-        let min=6;
-        let max=1;
-        for(let i=0; i < nodes.length; i++){
-            if(nodes[i].size >= max){
+    function update_max_and_min_sizes(nodes) {
+        let min = 6;
+        let max = 1;
+        for (let i = 0; i < nodes.length; i++) {
+            if (nodes[i].size >= max) {
                 max = nodes[i].size;
             }
-            if(nodes[i].size <= min){
+            if (nodes[i].size <= min) {
                 min = nodes[i].size;
             }
         }
         min_size = min;
         max_size = max;
+    }
+
+    function resize() {
+        if (!svg) return;
+        let rect = svg.getBoundingClientRect();
+        width = rect.width;
+        height = rect.height;
+
+        generate_graph();
     }
 
     onMount(async () => {
@@ -119,13 +140,7 @@
 
         generate_graph();
 
-        addEventListener("resize", () => {
-            let rect = svg.getBoundingClientRect();
-            width = rect.width;
-            height = rect.height;
-
-            generate_graph();
-        });
+        addEventListener("resize", resize);
 
         nodes_store.subscribe((val) => {
             data.nodes = val;
@@ -180,6 +195,7 @@
     }
 
     $: options & generate_graph();
+    $: viz_expanded & resize();
 </script>
 
 <div class="svg-wrapper">

@@ -43,7 +43,6 @@
 
                 if (level > 1) {
                     const last_id = Math.max(...last_ids.slice(0, level - 1));
-                    console.log(last_id)
                     if (last_id !== -1) {
                         links.push({
                             source: last_id,

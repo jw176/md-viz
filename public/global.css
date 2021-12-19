@@ -3,6 +3,7 @@
 	--background-lighter: rgb(47, 50, 51);
 	--text: white;
 	--lines: rgb(224, 224, 224);
+	--grey: rgb(110, 110, 110);
 }
 
 html, body {
@@ -12,7 +13,7 @@ html, body {
 }
 
 body {
-	color: var(--background);
+	background: var(--background);
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
