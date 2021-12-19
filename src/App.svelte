@@ -30,7 +30,7 @@
 		background: rgb(24, 28, 29);
 	}
 
-	.viz-wrapper {
+	.viz-wrapper, .editor-wrapper {
 		overflow: hidden;
 		position: relative;
 	}

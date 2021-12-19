@@ -135,4 +135,7 @@
 </div>
 
 <style>
+    .content {
+        display: none;
+    }
 </style>
