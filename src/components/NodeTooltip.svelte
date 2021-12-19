@@ -10,8 +10,8 @@
         return Math.max(min, Math.min(max, val));
     }
 
-    $: x = clamp(0, node.x - 100, container_rect.width - 200) + container_rect.left;
-    $: y = clamp(0, node.y + 25, container_rect.height - 120) + container_rect.top;
+    $: x = clamp(0, node.x - 100, container_rect.width - 200);
+    $: y = clamp(0, node.y + 25, container_rect.height - 120);
 
 </script>
 
