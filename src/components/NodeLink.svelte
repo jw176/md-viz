@@ -49,7 +49,7 @@
         return Math.max(min, Math.min(max, val));
     }
 
-    let svg, width, height, graph;
+    let svg, width, height, graph, min_size = 1, max_size = 6;
     // let data = import_data;
 
     let elementIsBeingDragged = false;
@@ -65,7 +65,7 @@
                     .id(function (d) {
                         return d.id;
                     })
-                    .strength(0.5)
+                    .strength(0.2)
             )
             .force("charge", d3.forceManyBody().strength(-1000))
             .force("center-x", d3.forceX().x(width / 2))
@@ -73,7 +73,8 @@
                 "center-y",
                 d3.forceY().y(function (d) {
                     if (!options[0].active) return (height / 2);
-                    const val = Math.round((d.size / 6) * height);
+                    const val = Math.round(((d.size - min_size + 1) / (max_size - min_size + 2)) * height);
+                    console.log(val);
                     return val;
                 }).strength(options[0].active ? 2 : 0.2)
             )
@@ -96,6 +97,21 @@
         graph.restart();
     }
 
+    function update_max_and_min_sizes(nodes){
+        let min=6;
+        let max=1;
+        for(let i=0; i < nodes.length; i++){
+            if(nodes[i].size >= max){
+                max = nodes[i].size;
+            }
+            if(nodes[i].size <= min){
+                min = nodes[i].size;
+            }
+        }
+        min_size = min;
+        max_size = max;
+    }
+
     onMount(async () => {
         let rect = svg.getBoundingClientRect();
         width = rect.width;
@@ -113,6 +129,7 @@
 
         nodes_store.subscribe((val) => {
             data.nodes = val;
+            update_max_and_min_sizes(val);
             generate_graph();
         });
         links_store.subscribe((val) => {
