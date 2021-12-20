@@ -116,6 +116,16 @@
     <h1>Markdown Visualiser</h1>
     <p>A simple app to help people visualise text documents as a mindmap automatically</p>
 
+    <h2>Usage</h2>
+    <p>
+        Simply edit the text in this editor and the document structure will be
+        visualised on the right in the form of a node link diagram.
+    </p>
+    <p>
+        You can interact with the visualisation by dragging nodes, and hovering
+        over a node will show a tooltip with some information from that node.
+    </p>
+
     <h2>Development</h2>
     <p>This app was created with the technologies below</p>
 
@@ -127,16 +137,6 @@
 
     <h3>ProseMirror</h3>
     <p>A JavaScript WYSIWYG Text editor library that allows for lots of customisation</p>
-
-    <h2>Usage</h2>
-    <p>
-        Simply edit the text in this editor and the document structure will be
-        visualised on the right in the form of a node link diagram.
-    </p>
-    <p>
-        You can interact with the visualisation by dragging nodes, and hovering
-        over a node will show a tooltip with some information from that node.
-    </p>
 
 </div>
 
