@@ -71,6 +71,35 @@ button:focus {
 }
 
 
+.ProseMirror h1 {
+	color: #4cc9f0;
+}
+
+.ProseMirror h2 {
+	color: #F72585;
+}
+
+.ProseMirror h3 {
+	color: #B0DB43;
+}
+
+.ProseMirror h4 {
+	color: #7E65CF;
+}
+
+.ProseMirror h5 {
+	color: #5AF2AE;
+}
+
+.ProseMirror h6 {
+	color: #F7F7F9;
+}
+
+p {
+	color:rgb(204, 204, 204);
+}
+
+
 
 .ProseMirror {
 	position: relative;
@@ -413,6 +442,15 @@ button:focus {
   .ProseMirror h5:first-child,
   .ProseMirror h6:first-child {
 	margin-top: 10px;
+  }
+
+  .ProseMirror h1,
+  .ProseMirror h2,
+  .ProseMirror h3,
+  .ProseMirror h4,
+  .ProseMirror h5,
+  .ProseMirror h6 {
+	margin-top: 20px;
   }
   
   .ProseMirror {
