@@ -7,11 +7,9 @@
 </script>
 
 <main class:viz_expanded>
-    {#if !viz_expanded}
-        <div class="editor-wrapper">
-            <Editor />
-        </div>
-    {/if}
+    <div class="editor-wrapper" class:hidden={viz_expanded}>
+        <Editor />
+    </div>
     <div class="viz-wrapper">
 		<div class="icon" on:click={() => {viz_expanded = !viz_expanded;}}>
 			<ExpandIcon></ExpandIcon>
@@ -33,8 +31,12 @@
     }
 
 	.viz_expanded {
-		display: block !important;
+		display: block;
 	}
+
+    .hidden {
+        display: none;
+    }
 
 	.icon {
 		height: 40px;
