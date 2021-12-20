@@ -49,7 +49,7 @@
     }
 
     function getRadius(d) {
-        return 30 - 4 * d.size;
+        return 24 - 3 * d.size;
     }
 
     function clamp(min, val, max) {
