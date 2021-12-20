@@ -5,6 +5,7 @@
     import NodeTooltip from "./NodeTooltip.svelte";
     import VizToolbar from "./VizToolbar.svelte";
     import { nodes_store, links_store } from "../stores";
+    import { get } from "svelte/store";
 
     let hover_node_index = null;
 
@@ -19,13 +20,18 @@
 
     let options = [
         {
+            name: "Network",
+            active: true,
+            callback: function () {},
+        },
+        {
             name: "Tree",
             active: false,
             callback: function () {},
         },
         {
             name: "Radial",
-            active: true,
+            active: false,
             callback: function () {},
         },
     ];
@@ -48,6 +54,14 @@
 
     function clamp(min, val, max) {
         return Math.max(min, Math.min(max, val));
+    }
+
+    function get_current_option() {
+        for (let i = 0; i < options.length; i++) {
+            if (options[i].active) {
+                return options[i].name;
+            }
+        }
     }
 
     let svg,
@@ -74,22 +88,6 @@
                     .strength(0.2)
             )
             .force("charge", d3.forceManyBody().strength(-1000))
-            .force("center-x", d3.forceX().x(width / 2))
-            .force(
-                "center-y",
-                d3
-                    .forceY()
-                    .y(function (d) {
-                        if (!options[0].active) return height / 2;
-                        const val = Math.round(
-                            ((d.size - min_size + 1) /
-                                (max_size - min_size + 2)) *
-                                height
-                        );
-                        return val;
-                    })
-                    .strength(options[0].active ? 2 : 0.2)
-            )
             .force(
                 "force-collide",
                 d3.forceCollide().radius(function (d) {
@@ -105,6 +103,38 @@
                     d.y = clamp(r, d.y, height - r);
                 });
             });
+
+        const current_option = get_current_option().toLowerCase();
+        if (current_option === "network") {
+            graph = graph
+                .force("center-x", d3.forceX().x(width / 2))
+                .force("center-y", d3.forceY().y(height / 2));
+        } else if (current_option === "tree") {
+            graph = graph.force("center-x", d3.forceX().x(width / 2)).force(
+                "center-y",
+                d3
+                    .forceY()
+                    .y(function (d) {
+                        const val = Math.round(
+                            ((d.size - min_size + 1) /
+                                (max_size - min_size + 2)) *
+                                height
+                        );
+                        return val;
+                    })
+                    .strength(2)
+            );
+        } else {
+            const min_dimension = Math.round(Math.min(height, width) / 2);
+            graph = graph.force('radial', d3.forceRadial().x(width / 2).y(height / 2).radius(function (d) {
+                const val = Math.round(
+                            ((d.size - min_size + 1) /
+                                (max_size - min_size + 2)) *
+                                min_dimension
+                        );
+                return val;
+            }).strength(2));
+        }
 
         graph.restart();
     }
