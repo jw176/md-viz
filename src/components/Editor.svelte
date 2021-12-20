@@ -114,12 +114,19 @@
 
 <div class="content" bind:this={content}>
     <h1>Markdown Visualiser</h1>
+    <p>A simple app to help people visualise text documents as a mindmap automatically</p>
 
     <h2>Development</h2>
-    This app was created with the following technologies: Svelte D3js ProseMirror
+    <p>This app was created with the technologies below</p>
+
     <h3>Svelte</h3>
+    <p>Sveltejs is a JavaScript compiler which helps build fast and lightweight web apps</p>
+
     <h3>D3js</h3>
+    <p>D3js is a JavaScript library which provides several tools for creating interactive data visualisations</p>
+
     <h3>ProseMirror</h3>
+    <p>A JavaScript WYSIWYG Text editor library that allows for lots of customisation</p>
 
     <h2>Usage</h2>
     <p>
@@ -130,6 +137,7 @@
         You can interact with the visualisation by dragging nodes, and hovering
         over a node will show a tooltip with some information from that node.
     </p>
+
 </div>
 
 <style>
