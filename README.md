@@ -3,7 +3,7 @@
 Visualise a Markdown/Rich Text document as an interactive node diagram.
 You can view the live version at https://md-viz.netlify.app/
 
-![](/readme_assets/overview.png)
+![](/readme_assets/demonstration.gif)
 
 ## Features
 
@@ -13,11 +13,21 @@ As shown in the image above, the Headings from the text editor component on the 
 
 ### Node tooltips
 
-TODO
+Examine the text content of each node on hover.
+
+![](readme_assets/tooltips.gif)
 
 ### Graph type
 
-TODO
+Switch between different structures of visualisation.
+
+**Network** - Nodes can move freely, according to the link forces, manybody forces, and force towards the center of the graph area.
+
+**Tree** - Nodes are affected by similar forces to the network type, but they are drawn to a y-value corresponding to the depth/level of each node.
+
+**Radial** - Similar to the tree structure, however nodes are instead drawn to a radius from the center depending on their depth/level. This can be useful when the branching factor is large.
+
+![](readme_assets/graph_type.gif)
 
 ## Development
 
