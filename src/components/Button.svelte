@@ -1,9 +1,10 @@
 <script>
     export let name;
     export let active;
+    export let colour = "cyan";
 </script>
 
-<div class="btn" on:click class:active>
+<div class="btn" on:click class:active style="{active ? `color: ${colour}` : ''}">
     {name}
 </div>
 
@@ -16,7 +17,6 @@
     }
 
     .active {
-        color: cyan;
         font-weight: 600;
     }
 </style>

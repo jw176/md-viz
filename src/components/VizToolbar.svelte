@@ -1,29 +1,16 @@
 <script>
-    import Button from "./Button.svelte";
+    import Toggle from "./Toggle.svelte";
 
-    export let options;
+    export let settings;
 
-    function select_option(name) {
-        for (let i = 0; i < options.length; i++) {
-            if (options[i].name === name) {
-                options[i].active = true;
-            } else {
-                options[i].active = false;
-            }
-        }
-    }
+    // let colours = ['cyan', 'green', 'purple'];
+    let colours = ['#d137fc', 'cyan'];
+
 </script>
 
 <div class="outer">
-    {#each options as option}
-        <Button
-            name={option.name}
-            on:click={() => {
-                select_option(option.name);
-                option.callback();
-            }}
-            bind:active={option.active}
-        />
+    {#each settings.toggles as toggle, index}
+        <Toggle bind:options={toggle} colour={colours[index]}></Toggle>
     {/each}
 </div>
 
@@ -37,7 +24,5 @@
         justify-content: center;
         align-items: center;
         padding: 4px;
-        border: 1px solid var(--lines);
-        border-radius: 5px;
     }
 </style>

@@ -18,23 +18,34 @@
         "#F7F7F9",
     ];
 
-    let options = [
-        {
-            name: "Network",
-            active: true,
-            callback: function () {},
-        },
-        {
-            name: "Tree",
-            active: false,
-            callback: function () {},
-        },
-        {
-            name: "Radial",
-            active: false,
-            callback: function () {},
-        },
-    ];
+    let settings = {
+        toggles: [
+            [
+                {
+                    name: "Node",
+                    active: true,
+                },
+                {
+                    name: "Card",
+                    active: false,
+                }
+            ],
+            [
+                {
+                    name: "Network",
+                    active: true,
+                },
+                {
+                    name: "Tree",
+                    active: false,
+                },
+                {
+                    name: "Radial",
+                    active: false,
+                },
+            ]
+        ],
+    };
 
     export const FORCE_BOUNDARY = true;
     export let viz_expanded;
@@ -56,10 +67,11 @@
         return Math.max(min, Math.min(max, val));
     }
 
-    function get_current_option() {
-        for (let i = 0; i < options.length; i++) {
-            if (options[i].active) {
-                return options[i].name;
+    function get_current_option(toggle_index) {
+        for (let i = 0; i < settings.toggles[toggle_index].length; i++) {
+            let item = settings.toggles[toggle_index][i];
+            if (item.active) {
+                return item.name;
             }
         }
     }
@@ -104,7 +116,7 @@
                 });
             });
 
-        const current_option = get_current_option().toLowerCase();
+        const current_option = get_current_option(1).toLowerCase();
         if (current_option === "network") {
             graph = graph
                 .force("center-x", d3.forceX().x(width / 2))
@@ -126,14 +138,22 @@
             );
         } else {
             const min_dimension = Math.round(Math.min(height, width) / 2);
-            graph = graph.force('radial', d3.forceRadial().x(width / 2).y(height / 2).radius(function (d) {
-                const val = Math.round(
+            graph = graph.force(
+                "radial",
+                d3
+                    .forceRadial()
+                    .x(width / 2)
+                    .y(height / 2)
+                    .radius(function (d) {
+                        const val = Math.round(
                             ((d.size - min_size + 1) /
                                 (max_size - min_size + 2)) *
                                 min_dimension
                         );
-                return val;
-            }).strength(2));
+                        return val;
+                    })
+                    .strength(2)
+            );
         }
 
         graph.restart();
@@ -224,12 +244,12 @@
         removeEventListener("mousemove", func);
     }
 
-    $: options & generate_graph();
+    $: settings & generate_graph();
     $: viz_expanded & resize();
 </script>
 
 <div class="svg-wrapper">
-    <VizToolbar bind:options />
+    <VizToolbar bind:settings />
 
     <svg bind:this={svg}>
         <g class="links">
